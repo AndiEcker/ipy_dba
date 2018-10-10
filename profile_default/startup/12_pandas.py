@@ -34,16 +34,16 @@ def xl_init_env(nb_name, in_sheet_skip_rows=1, in_sheet_header=0, in_sheet_use_c
     in_file_name = os.path.basename(in_file_names[0]) if in_file_names else ''
     in_file_path = os.path.join(in_folder, in_file_name)
     # print("Selected {} from unprocessed files: {}".format(in_file_path, in_file_names))
-    xl_reader = pd.ExcelFile(in_file_path)
+    xl_reader = pd.ExcelFile(in_file_path)      # for reading xlrd is the only supported engine
     in_sheet_names = xl_reader.sheet_names
     in_sheets = {sn: pd.read_excel(in_file_path, sheet_name=sn, skiprows=in_sheet_skip_rows,
-                                   in_sheet_header=in_sheet_header, usecols=in_sheet_use_cols)
+                                   header=in_sheet_header, usecols=in_sheet_use_cols)
                  for sn in in_sheet_names}
     in_record_count = sum(len(sd) for sd in in_sheets.values())
     in_records = pd.concat([sd for sd in in_sheets.values()], ignore_index=True, verify_integrity=True)
     out_file_name = new_file_name(in_file_name, time_stamp=startup_time)
     out_file_path = os.path.join(in_folder, processed_folder_name, out_file_name)
-    xl_writer = pd.ExcelWriter(out_file_path)
+    xl_writer = pd.ExcelWriter(out_file_path, engine='xlsxwriter')      # engine needed for write_string()
     sum_sheet_name = summary_sheet_name_prefix + '_' + processed_folder_name
     # need to create the sheet before writing the in_sheet_header
     xl_add_sheet_from_df(xl_writer, in_records, sum_sheet_name,

@@ -4,5 +4,8 @@ import IPython
 
 cfg_parser = ConfigParser()
 cfg_parser.optionxform = str    # to have case sensitive var names
+
 # noinspection PyUnresolvedReferences
-cfg_parser.read(os.path.join(IPython.paths.locate_profile(), 'startup', '.sys_env.cfg'), encoding='utf-8')
+profile_default_path = IPython.paths.locate_profile()
+
+cfg_parser.read(os.path.join(profile_default_path, 'startup', '.sys_env.cfg'), encoding='utf-8')
